@@ -2,6 +2,12 @@
 
 无任何外部库 / 图片 / 音频 / 字体依赖。Canvas + 原生 JavaScript + Web Audio API。
 
+> **直接下载 Windows 版（免安装）**
+> [![Download](https://img.shields.io/github/v/release/wangtaixiang666/jump100?label=下载%20exe&color=7ed957)](https://github.com/wangtaixiang666/jump100/releases/latest)
+>
+> - 安装版：`Jump100-Setup-1.0.0-x64.exe`（可选安装目录、创建快捷方式）
+> - 便携版：`Jump100-Portable-1.0.0.exe`（双击即玩，可放 U 盘）
+
 ## 一、运行
 
 ES Module 必须通过 HTTP 服务打开，不能直接双击 `index.html`（`file://` 会被 CORS 拦截）。
