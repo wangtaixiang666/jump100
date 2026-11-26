@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>是男人就跳100层</title>
+  <link rel="icon" href="data:," />
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <div id="app">
+    <div id="stage">
+      <canvas id="game" width="400" height="600"></canvas>
+
+      <!-- 无边框窗口的拖动条（仅桌面版无边框模式显示） -->
+      <div id="titlebar">
+        <span class="drag-area">是男人就跳100层</span>
+        <button id="title-min" type="button" title="最小化">—</button>
+        <button id="title-close" type="button" title="关闭">✕</button>
+      </div>
+
+      <!-- 主菜单 -->
+      <div id="menu-screen" class="screen">
+        <div class="menu-panel">
+          <div class="menu-title">是男人就跳<span>100</span>层</div>
+          <div class="menu-sub">PIXEL PLATFORMER · 5 THEMES · 7 PLATFORMS</div>
+          <canvas id="menu-hero" width="80" height="110"></canvas>
+          <div class="menu-buttons">
+            <button id="menu-start" class="menu-btn primary" type="button">▶ 开始游戏</button>
+            <button id="menu-settings" class="menu-btn" type="button">⚙ 设置</button>
+            <button id="menu-help" class="menu-btn" type="button">? 操作说明</button>
+            <button id="menu-quit" class="menu-btn danger" type="button">✕ 退出游戏</button>
+          </div>
+          <div class="menu-best">最高纪录 <b id="menu-best">0</b> 层</div>
+        </div>
+      </div>
+
+      <!-- 设置 -->
+      <div id="settings-screen" class="screen hidden">
+        <div class="menu-panel settings-panel">
+          <h2>设 置</h2>
+
+          <div class="setting-row">
+            <label>显示模式</label>
+            <div class="seg" id="seg-mode">
+              <button type="button" data-value="window">窗口化</button>
+              <button type="button" data-value="borderless">无边框</button>
+              <button type="button" data-value="fullscreen">全屏</button>
+            </div>
+            <div class="hint" id="mode-hint"></div>
+          </div>
+
+          <div class="setting-row">
+            <label>窗口大小</label>
+            <div class="seg" id="seg-size">
+              <button type="button" data-value="small">小</button>
+              <button type="button" data-value="medium">标准</button>
+              <button type="button" data-value="large">大</button>
+              <button type="button" data-value="custom">自定义</button>
+            </div>
+            <div class="custom-size hidden" id="custom-size">
+              <input id="custom-w" type="number" min="600" max="2560" step="10" />
+              <span>×</span>
+              <input id="custom-h" type="number" min="600" max="1600" step="10" />
+              <button id="custom-apply" type="button">应用</button>
+            </div>
+          </div>
+
+          <div class="setting-row switch-row">
+            <label>窗口置顶 <span class="tag">桌面版</span></label>
+            <button id="sw-top" class="switch" type="button">关</button>
+          </div>
+          <div class="setting-row switch-row">
+            <label>允许拖动缩放 <span class="tag">桌面版</span></label>
+            <button id="sw-resize" class="switch" type="button">开</button>
+          </div>
+
+          <div class="setting-row">
+            <label>BGM 音量 <span id="bgm-val" class="val">45</span></label>
+            <input id="set-bgm" type="range" min="0" max="100" />
+          </div>
+          <div class="setting-row">
+            <label>SFX 音量 <span id="sfx-val" class="val">70</span></label>
+            <input id="set-sfx" type="range" min="0" max="100" />
+          </div>
+          <div class="setting-row switch-row">
+            <label>静音 <span class="tag">M 键</span></label>
+            <button id="sw-mute" class="switch" type="button">关</button>
+          </div>
+
+          <div id="settings-tip" class="hint tip hidden"></div>
+          <button id="settings-back" class="menu-btn" type="button">← 返回</button>
+        </div>
+      </div>
+
+      <!-- 操作说明 -->
+      <div id="help-screen" class="screen hidden">
+        <div class="menu-panel help-panel">
+          <h2>操作说明</h2>
+          <ul class="help-list">
+            <li><b>A / D</b> 左右移动（方向键同样可用）</li>
+            <li><b>空格</b> 蓄力跳跃，按住越久跳越高</li>
+            <li><b>ESC</b> 暂停 / 返回菜单　<b>M</b> 静音　<b>R</b> 重开</li>
+          </ul>
+          <h3>平台机制</h3>
+          <p>冰面打滑 · 流沙下陷 · 计时平台消失 · 尖刺击退 · 移动平台跟随 · 熔岩更快消失</p>
+          <h3>小技巧</h3>
+          <p>先走到平台中心再起跳，越过上层顶面后再横移；从高处摔下会趴地滑行并短暂硬直。</p>
+          <button id="help-back" class="menu-btn" type="button">← 返回</button>
+        </div>
+      </div>
+
+      <!-- 暂停 -->
+      <div id="pause-screen" class="screen hidden">
+        <div class="menu-panel">
+          <h2>已 暂 停</h2>
+          <p class="pause-floor">FLOOR <b id="pause-floor">1</b> / 100</p>
+          <div class="menu-buttons">
+            <button id="pause-resume" class="menu-btn primary" type="button">▶ 继续游戏</button>
+            <button id="pause-restart" class="menu-btn" type="button">↻ 重新开始</button>
+            <button id="pause-settings" class="menu-btn" type="button">⚙ 设置</button>
+            <button id="pause-menu" class="menu-btn danger" type="button">← 返回主菜单</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 游戏结束 / 通关 -->
+      <div id="overlay" class="screen hidden">
+        <div class="menu-panel">
+          <h2 id="overlay-title">游戏结束</h2>
+          <div id="overlay-msg"></div>
+          <div class="menu-buttons">
+            <button id="start-btn" class="menu-btn primary" type="button">再来一次</button>
+            <button id="over-menu" class="menu-btn" type="button">← 返回主菜单</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 浏览器限制提示 -->
+      <div id="web-quit-tip" class="screen hidden">
+        <div class="panel">浏览器禁止网页自行关闭，请手动关闭标签页。</div>
+      </div>
+    </div>
+
+    <!-- 游戏内控制条 -->
+    <div id="toolbar">
+      <button id="mute-btn" type="button" title="静音 (M)">🔊</button>
+      <label>BGM <input id="bgm-vol" type="range" min="0" max="100" value="45" /></label>
+      <label>SFX <input id="sfx-vol" type="range" min="0" max="100" value="70" /></label>
+      <span id="best-label">最高：0 层</span>
+    </div>
+  </div>
+
+  <script type="module" src="./src/main.js"></script>
+</body>
+</html>

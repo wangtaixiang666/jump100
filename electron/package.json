@@ -1,0 +1,64 @@
+{
+  "name": "jump100-desktop",
+  "version": "1.0.0",
+  "description": "是男人就跳100层 - 像素平台跳跃游戏",
+  "main": "main.cjs",
+  "author": "WorkBuddy",
+  "license": "MIT",
+  "scripts": {
+    "dev": "electron .",
+    "build": "electron-builder --win --x64",
+    "build:portable": "electron-builder --win --x64 portable",
+    "build:installer": "electron-builder --win --x64 nsis"
+  },
+  "build": {
+    "appId": "com.workbuddy.jump100",
+    "productName": "是男人就跳100层",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "main.cjs",
+      "preload.cjs",
+      "icon.ico"
+    ],
+    "extraResources": [
+      {
+        "from": "../index.html",
+        "to": "game/index.html"
+      },
+      {
+        "from": "../styles.css",
+        "to": "game/styles.css"
+      },
+      {
+        "from": "../src",
+        "to": "game/src",
+        "filter": ["**/*.js"]
+      }
+    ],
+    "win": {
+      "target": [
+        { "target": "nsis", "arch": ["x64"] },
+        { "target": "portable", "arch": ["x64"] }
+      ],
+      "icon": "icon.ico",
+      "signAndEditExecutable": false,
+      "artifactName": "${productName}-${version}-${arch}.${ext}"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "是男人就跳100层"
+    },
+    "portable": {
+      "artifactName": "${productName}-便携版-${version}.${ext}"
+    }
+  },
+  "devDependencies": {
+    "electron": "45.5.0",
+    "electron-builder": "^25.1.8"
+  }
+}
